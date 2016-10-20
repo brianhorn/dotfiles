@@ -1,0 +1,74 @@
+#! /bin/sh
+
+PANEL_HEIGHT=28
+PANEL_FONT="Inconsolatazi4:size=11"
+PANEL_FONT_ICON="FontAwesome:size=11"
+
+if xdo id -a "$PANEL_WM_NAME" > /dev/null ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+bspc config top_padding $PANEL_HEIGHT
+bspc subscribe report > "$PANEL_FIFO" &
+
+# Title
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+
+. panel_colors
+
+# Date and clock
+while true;
+do
+        date=$(date '+%a %d.%m.%Y')
+        clock=$(date '+%H:%M')
+        echo -e S'\uf073' $date ' \t' '\uf017' $clock
+
+        sleep 1 
+done > $PANEL_FIFO &
+
+# Alsa volume
+while true;
+do
+    ALSA_VOLUME_LEVEL=$(amixer get Master | sed -n 's/^.*\[\([0-9]\+\)%.*$/\1/p'| uniq)
+    ALSA_VOLUME_STATUS=$(amixer get Master | tail -n 1 | cut -d '[' -f 4 | sed 's/].*//g')
+    if [ $ALSA_VOLUME_LEVEL -ge 70 -a $ALSA_VOLUME_STATUS == "on" ] 
+	then
+		echo -e V'\uf028' $ALSA_VOLUME_LEVEL ' \t'
+	fi
+	if [ $ALSA_VOLUME_LEVEL -gt 2 -a $ALSA_VOLUME_LEVEL -lt 70 -a $ALSA_VOLUME_STATUS == "on" ]
+	then
+		echo -e V'\uf027' $ALSA_VOLUME_LEVEL ' \t'
+	fi
+	if [ $ALSA_VOLUME_LEVEL -eq 0 ]
+	then
+		echo -e V'\uf026' $ALSA_VOLUME_LEVEL ' \t'
+	fi
+    if [ $ALSA_VOLUME_STATUS == "off" ]
+    then
+        echo -e V %{F$COLOR_FOCUSED_URGENT_BG}'\uf026' %{F$COLOR_SYS_FG}$ALSA_VOLUME_LEVEL ' \t'
+    fi
+
+	sleep 0.1
+done > $PANEL_FIFO &
+
+# Power
+echo -e P'\uf011' > $PANEL_FIFO &
+
+panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_FONT_ICON" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" | sh &
+
+wid=$(xdo id -a "$PANEL_WM_NAME")
+tries_left=20
+while [ -z "$wid" -a "$tries_left" -gt 0 ] ; do
+	sleep 0.05
+	wid=$(xdo id -a "$PANEL_WM_NAME")
+	tries_left=$((tries_left - 1))
+done
+[ -n "$wid" ] && xdo above -t "$(xdo id -N Bspwm -n root | sort | head -n 1)" "$wid"
+
+wait

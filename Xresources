@@ -1,0 +1,69 @@
+! Extensions
+URxvt.perl-ext-common: default,clipboard,keyboard-select
+
+! Set font and font size
+URxvt.font: xft:inconsolata:pixelsize=16
+
+! Enable/Disable scrollbar
+URxvt.scrollBar: false
+
+! Enable/Disable picture insert mode/ISO 14755 mode
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
+! Paste binding (copy by selecting text)
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+
+! Native transparency 
+URxvt*inheritPixmap: true 
+URxvt*transparent: true 
+URxvt*shading: 120
+
+! Backwards search
+URxvt.keysym.C-f: perl:keyboard-select:search
+
+! Colorscheme 
+*.foreground:   #a4a6ab
+*.background:   #2d2c28
+*.cursorColor:  #70b1e0
+
+! black
+*.color0:       #5b5955
+*.color8:       #707277
+
+! red
+*.color1:       #c4756e
+*.color9:       #f6a299
+
+! green
+*.color2:       #559a6a
+*.color10:      #82c896
+
+! yellow
+*.color3:       #9b8a4b
+*.color11:      #cab775
+
+! blue
+*.color4:       #6a8dca
+*.color12:      #98bbfb
+
+! magenta
+*.color5:       #b577ac
+*.color13:      #e5a4db
+
+! cyan
+*.color6:       #019baa
+*.color14:      #53cad9
+
+! white
+*.color7:       #dbdde2
+*.color15:      #f7f9ff
+
+! ------------------------------------------------------------------------------
+! ROFI Color theme
+! ------------------------------------------------------------------------------
+rofi.color-enabled: true
+rofi.color-window: #2d2c28, argb:8ba4a6ab, argb:0a4a6ab
+rofi.color-normal: #2d2c28, #a4a6ab, #2d2c28, argb:52a4a6ab, argb:b0dbdde2
+rofi.color-active: #2d2c28, #a4a6ab, #2d2c28, argb:5fa4a6ab, argb:afdbdde2
+rofi.color-urgent: #2d2c28, #a4a6ab, #2d2c28, argb:60a4a6ab, argb:a2dbdde2
