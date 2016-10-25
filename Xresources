@@ -15,9 +15,9 @@ URxvt.iso14755_52: false
 URxvt.keysym.Shift-Control-V: perl:clipboard:paste
 
 ! Native transparency 
-URxvt*inheritPixmap: true 
-URxvt*transparent: true 
-URxvt*shading: 120
+!URxvt*inheritPixmap: true 
+!URxvt*transparent: true 
+!URxvt*shading: 120
 
 ! Backwards search
 URxvt.keysym.C-f: perl:keyboard-select:search
