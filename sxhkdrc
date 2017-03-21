@@ -111,6 +111,10 @@ super + ctrl + space
 # cancel the preselection for the focused desktop
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+	
+# rotate horizontally
+super +  alt + x
+	bspc node @/ -R 90
 
 #
 # move/resize
