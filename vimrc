@@ -36,6 +36,8 @@ syntax enable
 set tabstop=4 		 
 set softtabstop=4	
 set expandtab		 
+" Mouse centered
+set scrolloff=10
 " Line numbers
 set number              
 " Command in bottom bar
